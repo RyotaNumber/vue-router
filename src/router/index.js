@@ -6,6 +6,7 @@ import Table from '@/views/Table.vue'
 import Images from '@/views/Images.vue'
 import Carousel from '@/views/Carousel.vue'
 import Login from '@/views/Login.vue'
+import Camera from '@/views/Camera.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,11 @@ const router = createRouter({
       path:'/carousel',
       name:'カルーセル',
       component:Carousel
+    },
+    {
+      path:"/camera",
+      name:"カメラ",
+      component:Camera
     }
   ]
 })

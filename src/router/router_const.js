@@ -7,7 +7,8 @@ const router_menu = [
     {title:"about",href:"/about"},
     {title:"notfound",href:"/hogehoge"},
     {title:"Images",href:"/images"},
-    {title:"Carousel",href:"/carousel"}
+    {title:"Carousel",href:"/carousel"},
+    {title:"Camera",href:"/camera"}
 ]
 
 
