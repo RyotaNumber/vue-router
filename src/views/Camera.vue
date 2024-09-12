@@ -1,22 +1,32 @@
 <template>
     <v-main>
-      <v-btn color="primary" @click="openCamera">
-        写真を撮影する
-      </v-btn>
+      <v-row>
+        <!-- 各写真のサムネイルを表示 -->
+        <v-col
+          v-for="(photo, index) in photos"
+          :key="index"
+          cols="2"
+        >
+          <v-img
+            :src="photo"
+            max-width="150"
+            class="my-thumbnail"
+            @click="openDialog(index)"
+          />
+        </v-col>
   
-      <!-- サムネイル表示 -->
-      <v-img
-        v-if="photo"
-        :src="photo"
-        max-width="150"
-        @click="showDialog = true"
-        class="my-thumbnail"
-      />
+        <!-- 写真が5つ未満ならプラスボタンを表示 -->
+        <v-col v-if="photos.length < 5" cols="2">
+          <v-btn icon @click="openCamera">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
   
-      <!-- 拡大画像を表示するダイアログ -->
+      <!-- 拡大画像のダイアログ -->
       <v-dialog v-model="showDialog" max-width="600px">
         <v-card>
-          <v-img :src="photo" />
+          <v-img :src="photos[currentPhotoIndex]" />
           <v-card-actions>
             <v-btn color="primary" @click="uploadPhoto">
               写真をアップロードする
@@ -41,13 +51,14 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axios from "axios";
   
   export default {
     data() {
       return {
-        photo: null, // Base64エンコードされた画像データ
-        showDialog: false, // 拡大画像用ダイアログの表示制御
+        photos: [], // 撮影された写真を格納する配列
+        showDialog: false, // 拡大画像表示用ダイアログの表示制御
+        currentPhotoIndex: null, // 現在表示している写真のインデックス
       };
     },
     methods: {
@@ -61,22 +72,28 @@
           // ファイルをBase64に変換
           const reader = new FileReader();
           reader.onload = (e) => {
-            this.photo = e.target.result; // Base64データを保存
+            this.photos.push(e.target.result); // Base64データを配列に追加
           };
           reader.readAsDataURL(file); // Base64形式に変換
         }
       },
+      openDialog(index) {
+        // サムネイルをクリックしたときに拡大画像を表示
+        this.currentPhotoIndex = index;
+        this.showDialog = true;
+      },
       async uploadPhoto() {
         try {
-          // Base64形式の写真をFastAPIに送信
-          await axios.post('https://your-fastapi-server.com/upload', {
-            photo: this.photo,
+          // 選択された写真をアップロード
+          const photo = this.photos[this.currentPhotoIndex];
+          await axios.post("https://your-fastapi-server.com/upload", {
+            photo: photo,
             car_id: 1, // 車両IDを含める
           });
-          alert('写真がアップロードされました');
+          alert("写真がアップロードされました");
           this.showDialog = false; // ダイアログを閉じる
         } catch (error) {
-          console.error('アップロードエラー:', error);
+          console.error("アップロードエラー:", error);
         }
       },
     },
