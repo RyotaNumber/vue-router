@@ -1,26 +1,49 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Notfound from '@/views/Notfound.vue'
 import HomeView from '../views/HomeView.vue'
+import AppSample1 from '@/views/AppSample1.vue'
+import Table from '@/views/Table.vue'
+import Images from '@/views/Images.vue'
+import Carousel from '@/views/Carousel.vue'
+import Login from '@/views/Login.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'トップページ',
       component: HomeView
     },
     {
+      path:"/login",
+      name:"ログイン",
+      component:Login
+    },
+    {
       path:"/:notFound(.*)",
-      name:"error .404",
-      component:HomeView
+      name:" !! ERROR 404 !!",
+      component:Notfound
     },
     {
       path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      name: 'アバウト',
+      component: AppSample1
+    },
+    {
+      path:'/table',
+      name:'テーブル',
+      component:Table
+    },
+    {
+      path:'/images',
+      name:'画像',
+      component:Images
+    },
+    {
+      path:'/carousel',
+      name:'カルーセル',
+      component:Carousel
     }
   ]
 })
