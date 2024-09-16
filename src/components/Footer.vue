@@ -1,5 +1,5 @@
 <template>
-  <v-footer app color="primary" height="64" class="footer">
+  <v-footer app color="primary" height="64" class="footer d-flex flex-column align-center justify-center">
     <v-container class="text-center white--text">
       <slot>
         <v-progress-circular
@@ -15,7 +15,6 @@
 <script>
 export default {
   data: () => ({
-    links: ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"],
   }),
 };
 </script>

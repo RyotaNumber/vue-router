@@ -33,7 +33,7 @@ export default {
 <template>
   <v-app>
     <v-app-bar dense elevation="0" color="primary">
-      <v-app-bar-nav-icon class="py-4" @click.stop="drawer = !drawer">
+      <v-app-bar-nav-icon class="" @click.stop="drawer = !drawer">
       </v-app-bar-nav-icon>
       <v-app-bar-title>
         {{ title }}
@@ -54,7 +54,7 @@ export default {
       </v-list>
     </v-navigation-drawer>
 
-      <RouterView />
+    <RouterView />
   </v-app>
 </template>
 

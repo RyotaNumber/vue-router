@@ -1,68 +1,75 @@
 <template>
   <v-main>
-    <v-row>
-      <!-- 各写真のサムネイルを表示 -->
-      <v-col v-for="(photo, index) in photos" :key="index" cols="2">
-        <v-img
-          :src="photo"
-          max-width="150"
-          class="my-thumbnail"
-          @click="openDialog(index)"
+    <v-container>
+      <v-sheet>
+        <v-row>
+          <!-- 各写真のサムネイルを表示 -->
+          <v-col
+            v-for="(photo, index) in photos"
+            :key="index"
+            cols="2"
+            class="flex justify-center align-center"
+          >
+            <v-img
+              :src="photo"
+              max-width="150"
+              class="my-thumbnail"
+              @click="openDialog(index)"
+            />
+          </v-col>
+        </v-row>
+
+        <!-- 拡大画像のダイアログ -->
+        <v-dialog
+          v-model="showDialog"
+          max-width="600px"
+          @click:outside="resetCurrentPhotoIndex"
+        >
+          <v-card>
+            <v-img :src="photos[currentPhotoIndex]" />
+            <v-card-actions>
+              <v-btn color="warning" @click="deletePhoto">
+                削除する
+              </v-btn>
+              <v-btn color="primary" @click="retakePhoto">
+                撮影しなおす
+              </v-btn>
+              <v-btn color="secondary" @click="resetCurrentPhotoIndex">
+                閉じる
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- カメラから写真を撮るためのファイル入力 -->
+        <input
+          ref="cameraInput"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          style="display: none"
+          @change="onPhotoSelected"
         />
-      </v-col>
-
-      <!-- 写真が5つ未満ならプラスボタンを表示 -->
-      <v-col v-if="photos.length < 5" cols="2">
-        <v-btn icon @click="openCamera">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
-
-    <!-- 拡大画像のダイアログ -->
-    <v-dialog
-      v-model="showDialog"
-      max-width="600px"
-      @click:outside="resetCurrentPhotoIndex"
-    >
-      <v-card>
-        <v-img :src="photos[currentPhotoIndex]" />
-        <v-card-actions>
-          <v-btn color="primary" @click="retakePhoto"> 撮影しなおす </v-btn>
-          <v-btn color="secondary" @click="resetCurrentPhotoIndex">
-            閉じる
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- 5枚まとめてアップロード -->
-    <v-btn color="success" @click="uploadAllPhotos">
-      5枚まとめてアップロード
-    </v-btn>
-
-    <!-- カメラから写真を撮るためのファイル入力 -->
-    <input
-      ref="cameraInput"
-      type="file"
-      accept="image/*"
-      capture="environment"
-      style="display: none"
-      @change="onPhotoSelected"
-    />
+      </v-sheet>
+    </v-container>
   </v-main>
   <Footer>
-    <div v-if="photos.length < 5">
-        <v-btn icon @click="openCamera">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </div>
+    <div class="d-flex justify-space-evenly">
+      <v-btn icon @click="openCamera" class="">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+      <!-- 5枚まとめてアップロード -->
+      <v-btn icon color="success" @click="uploadAllPhotos">
+        <v-icon> mdi-upload-multiple </v-icon>
+      </v-btn>
+    </div>
   </Footer>
 </template>
 
 <script>
 import Footer from "@/components/Footer.vue";
 import axios from "axios";
+import {useConfirmDialog} from "@vueuse/core"
 
 export default {
   components: {
@@ -119,6 +126,10 @@ export default {
     retakePhoto() {
       // 再撮影のためにカメラを再度開く
       this.openCamera();
+    },
+    deletePhoto(){
+      this.showDialog = false;
+      this.photos.splice(this.currentPhotoIndex,1)
     },
     async uploadAllPhotos() {
       console.log(this.photos);
